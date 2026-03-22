@@ -19,32 +19,32 @@
   --green:#16A34A; --green-bg:#EDFAF3;
   --orange:#C2410C; --orange-bg:#FFF4EF;
 }
-html{
-  height: 100%;
-  background: #080808;
-}
-body{
-  height: 100%;
+html, body {
   margin: 0;
   padding: 0;
   background: #080808;
   font-family: 'DM Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
-.app{
+.app {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
   max-width: 430px;
-  margin: 0 auto;
   height: 100%;
   background: var(--white);
-  position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 /* ── TRANSITIONS ── */
-.screen{
+.screen {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   display: flex;
@@ -58,9 +58,9 @@ body{
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
-.screen::-webkit-scrollbar{display:none;}
-.screen.active{opacity:1;pointer-events:all;transform:translateY(0);}
-.screen.exit{opacity:0;transform:translateY(-12px);transition:opacity .28s ease,transform .28s ease;}
+.screen::-webkit-scrollbar { display: none; }
+.screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+.screen.exit { opacity: 0; transform: translateY(-12px); transition: opacity .28s ease, transform .28s ease; }
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 .anim{opacity:0;animation:fadeUp .6s cubic-bezier(.22,1,.36,1) forwards;}
 .a1{animation-delay:.1s;} .a2{animation-delay:.22s;} .a3{animation-delay:.36s;} .a4{animation-delay:.5s;}
@@ -141,7 +141,7 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .tab-bar::-webkit-scrollbar{display:none;}
 .tab-btn{flex-shrink:0;padding:13px 16px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Sans',sans-serif;color:var(--ink-400);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-.5px;transition:color .15s,border-color .15s;white-space:nowrap;}
 .tab-btn.active{color:var(--ink-900);border-bottom-color:var(--ink-900);}
-.tab-content{display:none;overflow-y:auto;flex:1;padding-bottom:32px;scrollbar-width:none;}
+.tab-content{display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(80px + env(safe-area-inset-bottom));scrollbar-width:none;}
 .tab-content::-webkit-scrollbar{display:none;}
 .tab-content.active{display:block;}
 
@@ -283,7 +283,7 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .btn-reset{width:100%;background:transparent;color:var(--ink-400);border:.5px solid var(--ink-200);border-radius:10px;padding:12px;font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;margin-top:8px;}
 
 /* Bottom nav */
-.bnav{background:var(--white);border-top:.5px solid var(--ink-200);padding:11px 0 calc(12px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;flex-shrink:0;}
+.bnav{background:var(--white);border-top:.5px solid var(--ink-200);padding:10px 0 calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:space-around;flex-shrink:0;}
 .bni{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:4px 14px;}
 .bni-ico{width:20px;height:20px;opacity:.2;transition:opacity .2s;color:var(--ink-900);}
 .bni.active .bni-ico{opacity:1;}
@@ -723,6 +723,25 @@ function switchNav(el,tab){
     splash.classList.add('fade-out');
     setTimeout(()=>{
       splash.classList.remove('active','fade-out');
+      // Kayıtlı veri var mı kontrol et
+      try {
+        const saved = localStorage.getItem('zodia_chart');
+        if (saved) {
+          const d = JSON.parse(saved);
+          // Form alanlarını doldur
+          if(document.getElementById('f-name')) document.getElementById('f-name').value = d.name || '';
+          if(document.getElementById('f-date')) document.getElementById('f-date').value = d.dateV || '';
+          if(document.getElementById('f-time') && d.timeV) document.getElementById('f-time').value = d.timeV;
+          if(document.getElementById('f-city') && d.city) document.getElementById('f-city').value = d.city;
+          // userChart'ı restore et
+          userChart = {name:d.name, sl:d.sl, ml:d.ml, al:d.al, pl:d.pl, ss:d.ss, ms:d.ms, as:d.as};
+          // Dashboard'ı yükle
+          renderDashboard(d);
+          cur = 's-dash';
+          document.getElementById('s-dash').classList.add('active');
+          return;
+        }
+      } catch(e) {}
       cur='s-welcome';
       document.getElementById('s-welcome').classList.add('active');
     }, 1000);
@@ -828,44 +847,76 @@ function calculate(){
     const sl=sunL(jd),ml=moonL(jd),al=ascL(jd,lat,lon);
     const pl={mercury:mL(jd),venus:vL(jd),mars:maL(jd),jupiter:jL(jd),saturn:sL(jd)};
     const ss=sn(sl),ms=sn(ml),as=sn(al),sd=SD[ss];
-    // Store for compatibility
+    // Store for compatibility + save to localStorage
     userChart={name,sl,ml,al,pl,ss,ms,as};
-    const el={Ateş:0,Toprak:0,Hava:0,Su:0};
-    [ss,ms,as,...Object.values(pl).map(sn)].forEach(s=>{if(SD[s])el[SD[s].el]++;});
-    const de=Object.entries(el).sort((a,b)=>b[1]-a[1])[0][0];
-    // Header
-    document.getElementById('d-name').textContent=name;
-    document.getElementById('d-sub').textContent=`${ss} · ${ms} · ${as} yükselen`;
-    // Harita
-    document.getElementById('d-sun').textContent=ss;document.getElementById('d-moon').textContent=ms;document.getElementById('d-asc').textContent=as;
-    document.getElementById('d-sun-deg').textContent=dg(sl);document.getElementById('d-moon-deg').textContent=dg(ml);document.getElementById('d-asc-deg').textContent=dg(al);
-    document.getElementById('d-daily').textContent=DAILY[new Date().getDay()%DAILY.length];
-    document.getElementById('d-elem').textContent=`${de} · ${Object.entries(el).filter(e=>e[1]).map(e=>e[0]+' ('+e[1]+')').join(' · ')}`;
-    // Kişilik
-    document.getElementById('k-sign').textContent=ss;
-    document.getElementById('k-el').textContent=sd.el+' elementi · '+sd.ruler+' hükmediyor';
-    document.getElementById('k-kws').innerHTML=sd.kw.map(k=>`<span class="k-kw">${k}</span>`).join('');
-    document.getElementById('k-bg').innerHTML=`<g opacity="1">${BGSIGN[ss]||''}</g>`;
-    document.getElementById('k-str').textContent=sd.str;
-    document.getElementById('k-ch').textContent=sd.ch;
-    document.getElementById('k-moon').textContent=SD[ms]?.moon||'—';
-    document.getElementById('k-ris').textContent=SD[as]?.rising||'—';
-    document.getElementById('k-love').textContent=sd.love;
-    document.getElementById('k-car').textContent=sd.career;
-    // Gezegenler
-    const pRows=[{s:'☉',n:'Güneş',sgn:ss,lon:sl,h:'5. Ev'},{s:'☽',n:'Ay',sgn:ms,lon:ml,h:'4. Ev'},{s:'☿',n:'Merkür',sgn:sn(pl.mercury),lon:pl.mercury,h:'3. Ev',rx:true},{s:'♀',n:'Venüs',sgn:sn(pl.venus),lon:pl.venus,h:'12. Ev'},{s:'♂',n:'Mars',sgn:sn(pl.mars),lon:pl.mars,h:'2. Ev'},{s:'♃',n:'Jüpiter',sgn:sn(pl.jupiter),lon:pl.jupiter,h:'8. Ev',acc:true},{s:'♄',n:'Satürn',sgn:sn(pl.saturn),lon:pl.saturn,h:'9. Ev',rx:true}];
-    document.getElementById('planet-list').innerHTML=pRows.map(p=>`<div class="pl-row"><div class="pl-sym${p.acc?' acc':''}">${p.s}</div><div class="pl-info"><div class="pl-name">${p.n}${p.rx?'<span class="pl-rx">Rx</span>':''}</div><div class="pl-det">${p.sgn} · ${p.h}</div></div><div class="pl-deg">${dg(p.lon)}</div></div>`).join('');
-    // Aspektler
-    const allL={sun:sl,moon:ml,...pl};
-    const aNames={sun:'Güneş',moon:'Ay',mercury:'Merkür',venus:'Venüs',mars:'Mars',jupiter:'Jüpiter',saturn:'Satürn'};
-    const pairs=[['sun','moon'],['sun','jupiter'],['moon','venus'],['mercury','saturn'],['venus','mars'],['sun','saturn'],['moon','jupiter']];
-    document.getElementById('aspect-list').innerHTML=pairs.map(([a,b])=>{const r=getAsp(allL[a],allL[b]);if(!r)return'';const o=Math.min(Math.abs(allL[a]-allL[b])%360,360-Math.abs(allL[a]-allL[b])%360).toFixed(1);return`<div class="asp-row"><div class="asp-ico ${r.c}">${r.s}</div><div class="asp-info"><div class="asp-pl">${aNames[a]} — ${aNames[b]}</div><div class="asp-tp">${r.t}</div></div><div class="asp-orb">${o}°</div></div>`;}).join('');
-    // Döngüler
-    const cyc=[{t:'Satürn Geçişi',p:'Uzun vadeli yapı dönemi',act:true,d:`Satürn ${as} burcundan geçerken uzun vadeli yapılar inşa etme ve eski kalıpları bırakma zamanı. Zorlu ama dönüştürücü bir dönem.`,pr:45,s:'Mar 2024',e:'Eyl 2025'},{t:`${ss} Mevsimi`,p:`Güneş ${ss}'de`,act:true,d:'Güneş kendi burcundan geçiyor — yıl içinde en güçlü dönemlerinden biri. Kendine yatırım yap.',pr:70,s:'Şub 2025',e:'Mar 2025'},{t:'Jüpiter Genişlemesi',p:'Önümüzdeki 6 ay',act:false,d:'Jüpiter büyüme ve bolluk getirir. Yeni fırsatlar için zihnini ve kalbini açık tut.',pr:0},{t:'Dolunay Etkisi',p:'Bu ay',act:false,d:'Dolunay duygusal doruk noktasını simgeler. Kapanması gereken döngüler kapanır.',pr:0}];
-    document.getElementById('cycles-section').innerHTML=cyc.map(c=>`<div class="cy-card"><div class="cy-top"><div><div class="cy-title">${c.t}</div><div class="cy-period">${c.p}</div></div>${c.act?'<div class="cy-active"><div class="pulse"></div>Aktif</div>':''}</div><div class="cy-body"><div class="cy-desc">${c.d}</div>${c.act&&c.pr?`<div class="prog-track"><div class="prog-fill" style="width:${c.pr}%"></div></div><div class="prog-lbs"><span class="prog-lb">${c.s}</span><span class="prog-lb">${c.e}</span></div>`:''}  </div></div>`).join('');
-    drawChart(sl,ml,al,pl);
+    try {
+      localStorage.setItem('zodia_chart', JSON.stringify({
+        name, dateV, timeV, city,
+        sl, ml, al,
+        pl: {mercury:pl.mercury, venus:pl.venus, mars:pl.mars, jupiter:pl.jupiter, saturn:pl.saturn},
+        ss, ms, as
+      }));
+    } catch(e) {}
+    renderDashboard({name,sl,ml,al,pl,ss,ms,as,dateV,timeV,city});
     goTo('s-dash');
   },3000);
+}
+
+// ── RENDER DASHBOARD (kayıtlı veri veya yeni hesap) ──
+function renderDashboard(d){
+  const {name,sl,ml,al,pl,ss,ms,as} = d;
+  const sd = SD[ss] || SD['Koç'];
+  const el={Ateş:0,Toprak:0,Hava:0,Su:0};
+  [ss,ms,as,...Object.values(pl).map(sn)].forEach(s=>{if(SD[s])el[SD[s].el]++;});
+  const de=Object.entries(el).sort((a,b)=>b[1]-a[1])[0][0];
+
+  document.getElementById('d-name').textContent=name;
+  document.getElementById('d-sub').textContent=`${ss} · ${ms} · ${as} yükselen`;
+  document.getElementById('d-sun').textContent=ss;
+  document.getElementById('d-moon').textContent=ms;
+  document.getElementById('d-asc').textContent=as;
+  document.getElementById('d-sun-deg').textContent=dg(sl);
+  document.getElementById('d-moon-deg').textContent=dg(ml);
+  document.getElementById('d-asc-deg').textContent=dg(al);
+  document.getElementById('d-daily').textContent=DAILY[new Date().getDay()%DAILY.length];
+  document.getElementById('d-elem').textContent=`${de} · ${Object.entries(el).filter(e=>e[1]).map(e=>e[0]+' ('+e[1]+')').join(' · ')}`;
+
+  document.getElementById('k-sign').textContent=ss;
+  document.getElementById('k-el').textContent=sd.el+' elementi · '+sd.ruler+' hükmediyor';
+  document.getElementById('k-kws').innerHTML=sd.kw.map(k=>`<span class="k-kw">${k}</span>`).join('');
+  document.getElementById('k-bg').innerHTML=`<g opacity="1">${BGSIGN[ss]||''}</g>`;
+  document.getElementById('k-str').textContent=sd.str;
+  document.getElementById('k-ch').textContent=sd.ch;
+  document.getElementById('k-moon').textContent=SD[ms]?.moon||'—';
+  document.getElementById('k-ris').textContent=SD[as]?.rising||'—';
+  document.getElementById('k-love').textContent=sd.love;
+  document.getElementById('k-car').textContent=sd.career;
+
+  const pRows=[
+    {s:'☉',n:'Güneş',sgn:ss,lon:sl,h:'5. Ev'},
+    {s:'☽',n:'Ay',sgn:ms,lon:ml,h:'4. Ev'},
+    {s:'☿',n:'Merkür',sgn:sn(pl.mercury),lon:pl.mercury,h:'3. Ev',rx:true},
+    {s:'♀',n:'Venüs',sgn:sn(pl.venus),lon:pl.venus,h:'12. Ev'},
+    {s:'♂',n:'Mars',sgn:sn(pl.mars),lon:pl.mars,h:'2. Ev'},
+    {s:'♃',n:'Jüpiter',sgn:sn(pl.jupiter),lon:pl.jupiter,h:'8. Ev',acc:true},
+    {s:'♄',n:'Satürn',sgn:sn(pl.saturn),lon:pl.saturn,h:'9. Ev',rx:true}
+  ];
+  document.getElementById('planet-list').innerHTML=pRows.map(p=>`<div class="pl-row"><div class="pl-sym${p.acc?' acc':''}">${p.s}</div><div class="pl-info"><div class="pl-name">${p.n}${p.rx?'<span class="pl-rx">Rx</span>':''}</div><div class="pl-det">${p.sgn} · ${p.h}</div></div><div class="pl-deg">${dg(p.lon)}</div></div>`).join('');
+
+  const allL={sun:sl,moon:ml,...pl};
+  const aNames={sun:'Güneş',moon:'Ay',mercury:'Merkür',venus:'Venüs',mars:'Mars',jupiter:'Jüpiter',saturn:'Satürn'};
+  const pairs=[['sun','moon'],['sun','jupiter'],['moon','venus'],['mercury','saturn'],['venus','mars'],['sun','saturn'],['moon','jupiter']];
+  document.getElementById('aspect-list').innerHTML=pairs.map(([a,b])=>{const r=getAsp(allL[a],allL[b]);if(!r)return'';const o=Math.min(Math.abs(allL[a]-allL[b])%360,360-Math.abs(allL[a]-allL[b])%360).toFixed(1);return`<div class="asp-row"><div class="asp-ico ${r.c}">${r.s}</div><div class="asp-info"><div class="asp-pl">${aNames[a]} — ${aNames[b]}</div><div class="asp-tp">${r.t}</div></div><div class="asp-orb">${o}°</div></div>`;}).join('');
+
+  const cyc=[
+    {t:'Satürn Geçişi',p:'Uzun vadeli yapı dönemi',act:true,d:`Satürn ${as} burcundan geçerken uzun vadeli yapılar inşa etme ve eski kalıpları bırakma zamanı. Zorlu ama dönüştürücü bir dönem.`,pr:45,s:'Mar 2024',e:'Eyl 2025'},
+    {t:`${ss} Mevsimi`,p:`Güneş ${ss}'de`,act:true,d:'Güneş kendi burcundan geçiyor — yıl içinde en güçlü dönemlerinden biri. Kendine yatırım yap.',pr:70,s:'Şub 2025',e:'Mar 2025'},
+    {t:'Jüpiter Genişlemesi',p:'Önümüzdeki 6 ay',act:false,d:'Jüpiter büyüme ve bolluk getirir. Yeni fırsatlar için zihnini ve kalbini açık tut.',pr:0},
+    {t:'Dolunay Etkisi',p:'Bu ay',act:false,d:'Dolunay duygusal doruk noktasını simgeler. Kapanması gereken döngüler kapanır.',pr:0}
+  ];
+  document.getElementById('cycles-section').innerHTML=cyc.map(c=>`<div class="cy-card"><div class="cy-top"><div><div class="cy-title">${c.t}</div><div class="cy-period">${c.p}</div></div>${c.act?'<div class="cy-active"><div class="pulse"></div>Aktif</div>':''}</div><div class="cy-body"><div class="cy-desc">${c.d}</div>${c.act&&c.pr?`<div class="prog-track"><div class="prog-fill" style="width:${c.pr}%"></div></div><div class="prog-lbs"><span class="prog-lb">${c.s}</span><span class="prog-lb">${c.e}</span></div>`:''}  </div></div>`).join('');
+
+  drawChart(sl,ml,al,pl);
 }
 
 // ── COMPATIBILITY ──
