@@ -214,25 +214,15 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
   flex-direction: column;
   overflow: hidden;
 }
-.dash-hd{background:var(--white);padding:calc(52px + env(safe-area-inset-top)) 24px 0;flex-shrink:0;}
+.dash-hd{background:var(--white);padding:calc(48px + env(safe-area-inset-top)) 24px 0;flex-shrink:0;}
 .dash-eye{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--arc);font-weight:500;margin-bottom:5px;}
 .dash-name{font-size:34px;font-weight:300;color:var(--ink-900);letter-spacing:-.02em;line-height:1;margin-bottom:4px;}
-.dash-sub{font-size:12px;font-weight:300;color:var(--ink-400);padding-bottom:18px;}
-.tab-bar{background:var(--white);display:flex;border-bottom:.5px solid var(--ink-200);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
-.tab-bar::-webkit-scrollbar{display:none;}
-.tab-btn{flex-shrink:0;padding:13px 16px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;font-family:'DM Sans',sans-serif;color:var(--ink-400);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-.5px;transition:color .15s,border-color .15s;white-space:nowrap;}
-.tab-btn.active{color:var(--ink-900);border-bottom-color:var(--ink-900);}
-.tab-content {
-  display: none;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  flex: 1;
-  min-height: 0;
-  padding-bottom: calc(20px + env(safe-area-inset-bottom));
-  scrollbar-width: none;
-}
-.tab-content::-webkit-scrollbar { display: none; }
-.tab-content.active { display: block; }
+.dash-sub{font-size:12px;font-weight:300;color:var(--ink-400);padding-bottom:16px;}
+/* Tab wrapper — flex:1 ile nav'ı alta iter */
+.tab-wrapper{flex:1;position:relative;overflow:hidden;}
+.tab-content{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;scrollbar-width:none;padding-bottom:calc(24px + env(safe-area-inset-bottom));}
+.tab-content::-webkit-scrollbar{display:none;}
+.tab-content.active{display:block;}
 
 /* Harita */
 .chart-section{padding:20px 20px 14px;display:flex;flex-direction:column;align-items:center;}
@@ -282,6 +272,15 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .pl-det{font-size:11px;font-weight:300;color:var(--ink-400);margin-top:1px;}
 .pl-rx{font-size:9px;color:var(--arc);font-weight:500;letter-spacing:.06em;margin-left:5px;}
 .pl-deg{font-size:11px;color:var(--ink-400);font-family:monospace;}
+.pl-chev{font-size:10px;color:var(--ink-300);margin-left:2px;transition:transform .2s;display:inline-block;}
+.pl-chev.open{transform:rotate(180deg);}
+.pl-detail{display:none;padding:12px 14px 14px;background:var(--ink-50);border-top:.5px solid var(--ink-100);}
+.pl-detail.open{display:block;}
+.pl-detail-name{font-size:11px;font-weight:500;color:var(--arc);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;}
+.pl-detail-what{font-size:12px;font-weight:300;color:var(--ink-500);line-height:1.7;margin-bottom:8px;}
+.pl-detail-in{padding-top:8px;border-top:.5px solid var(--ink-200);}
+.pl-detail-in-lbl{font-size:10px;font-weight:500;color:var(--ink-400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;}
+.pl-detail-in-txt{font-size:12px;font-weight:300;color:var(--ink-700);line-height:1.65;}
 .asp-card{background:var(--white);border:.5px solid var(--ink-200);border-radius:14px;overflow:hidden;}
 .asp-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:.5px solid var(--ink-100);}
 .asp-row:last-child{border-bottom:none;}
@@ -306,7 +305,8 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
 .pulse{width:5px;height:5px;border-radius:50%;background:var(--arc);animation:pa 2s ease-in-out infinite;}
 @keyframes pa{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.65);}}
 .cy-body{padding:12px 16px;}
-.cy-desc{font-size:13px;font-weight:300;color:var(--ink-500);line-height:1.8;margin-bottom:12px;}
+.cy-desc{font-size:13px;font-weight:300;color:var(--ink-500);line-height:1.8;margin-bottom:8px;}
+.cy-premium-hint{font-size:11px;font-weight:500;color:var(--arc);letter-spacing:.03em;margin-bottom:10px;cursor:pointer;}
 .prog-track{height:2px;background:var(--ink-100);border-radius:1px;}
 .prog-fill{height:2px;background:var(--ink-900);border-radius:1px;transition:width 1s cubic-bezier(.22,1,.36,1);}
 .prog-lbs{display:flex;justify-content:space-between;margin-top:5px;}
@@ -314,6 +314,17 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
 
 /* ══ UYUM TAB ══ */
 .uyum-section{padding:14px 20px 0;}
+.saved-hd{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-400);font-weight:500;margin-bottom:8px;}
+.saved-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--white);border:.5px solid var(--ink-200);border-radius:12px;margin-bottom:6px;cursor:pointer;transition:background .15s;}
+.saved-row:active{background:var(--ink-50);}
+.saved-avatar{width:32px;height:32px;border-radius:50%;background:var(--arc-50);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--arc);flex-shrink:0;}
+.saved-info{flex:1;min-width:0;}
+.saved-name{font-size:13px;font-weight:500;color:var(--ink-900);}
+.saved-signs{font-size:11px;font-weight:300;color:var(--ink-400);margin-top:1px;}
+.saved-del{font-size:18px;color:var(--ink-300);padding:4px 0 4px 8px;cursor:pointer;flex-shrink:0;}
+.compat-teaser{background:var(--white);border:.5px solid var(--ink-200);border-radius:14px;padding:16px;margin-bottom:10px;}
+.compat-teaser-txt{font-size:13px;font-weight:300;color:var(--ink-500);line-height:1.75;}
+.compat-premium-hint{margin-top:10px;font-size:11px;font-weight:500;color:var(--arc);letter-spacing:.03em;}
 
 /* Kişi kartları yan yana */
 .people-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
@@ -503,166 +514,155 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
     <div class="dash-name" id="d-name">—</div>
     <div class="dash-sub" id="d-sub">—</div>
   </div>
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="showTab('harita',this)">Harita</button>
-    <button class="tab-btn" onclick="showTab('kisilik',this)">Kişilik</button>
-    <button class="tab-btn" onclick="showTab('gezegenler',this)">Gezegenler</button>
-    <button class="tab-btn" onclick="showTab('donguler',this)">Döngüler</button>
-    <button class="tab-btn" onclick="showTab('uyum',this)">Uyum</button>
-  </div>
 
-  <!-- HARITA -->
-  <div class="tab-content active" id="tab-harita">
-    <div class="chart-section">
-      <svg class="chart-svg" id="chart-svg" viewBox="0 0 300 300" fill="none"></svg>
-      <div class="triad-row">
-        <div class="tc"><div class="tc-lbl">Güneş ☉</div><div class="tc-sign" id="d-sun">—</div><div class="tc-deg" id="d-sun-deg">—</div></div>
-        <div class="tc"><div class="tc-lbl">Ay ☽</div><div class="tc-sign" id="d-moon">—</div><div class="tc-deg" id="d-moon-deg">—</div></div>
-        <div class="tc dark"><div class="tc-lbl">Yükselen ↑</div><div class="tc-sign" id="d-asc">—</div><div class="tc-deg" id="d-asc-deg">—</div></div>
-      </div>
-    </div>
-    <div class="daily-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
-        <div class="daily-lbl" style="margin-bottom:0;">Bugünün Enerjisi</div>
-        <button id="daily-refresh" onclick="loadDailyAI()" style="background:rgba(91,127,255,.15);border:none;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:500;color:#5B7FFF;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:.04em;display:flex;align-items:center;gap:4px;">
-          <span id="daily-refresh-icon">✦</span> AI yorum
-        </button>
-      </div>
-      <div class="daily-txt" id="d-daily">—</div>
-    </div>
-    <div class="elem-card"><div class="elem-lbl">Dominant Element</div><div class="elem-val" id="d-elem">—</div></div>
-  </div>
+  <!-- Tab wrapper: flex:1 ile nav alta yapışır -->
+  <div class="tab-wrapper">
 
-  <!-- KİŞİLİK -->
-  <div class="tab-content" id="tab-kisilik">
-    <div class="k-hero">
-      <svg class="k-hero-bg" id="k-bg" width="120" height="120" viewBox="0 0 140 140" fill="none"></svg>
-      <div class="k-eye">Güneş Burcu</div>
-      <div class="k-name" id="k-sign">—</div>
-      <div class="k-el" id="k-el">—</div>
-      <div class="k-kws" id="k-kws"></div>
-    </div>
-    <div class="trait-section">
-      <div class="trait-blk"><div class="trait-over">Güçlü Yönler</div><div class="trait-title">Seni benzersiz kılan</div><div class="trait-txt" id="k-str">—</div></div>
-      <div class="trait-blk"><div class="trait-over">Zorluklar</div><div class="trait-title">Büyüme alanların</div><div class="trait-txt" id="k-ch">—</div></div>
-      <div class="trait-blk"><div class="trait-over">Ay Burcu</div><div class="trait-title">İç dünyan</div><div class="trait-txt" id="k-moon">—</div></div>
-      <div class="trait-blk"><div class="trait-over">Yükselen Burç</div><div class="trait-title">Dışarıdan nasıl görünürsün</div><div class="trait-txt" id="k-ris">—</div></div>
-      <div class="trait-blk"><div class="trait-over">Aşk & İlişki</div><div class="trait-title">Sevginin dili</div><div class="trait-txt" id="k-love">—</div></div>
-      <div class="trait-blk"><div class="trait-over">Kariyer</div><div class="trait-title">Hedeflerin ve yolun</div><div class="trait-txt" id="k-car">—</div></div>
-    </div>
-  </div>
-
-  <!-- GEZEGENLER -->
-  <div class="tab-content" id="tab-gezegenler">
-    <div class="pl-section">
-      <div class="sec-hd">Gezegen Konumları</div>
-      <div class="pl-card" id="planet-list"></div>
-      <div class="sec-hd" style="margin-top:16px;">Aspektler</div>
-      <div class="asp-card" id="aspect-list"></div>
-    </div>
-  </div>
-
-  <!-- DÖNGÜLER -->
-  <div class="tab-content" id="tab-donguler">
-    <div class="cy-section" id="cycles-section"></div>
-  </div>
-
-  <!-- ══ UYUM ══ -->
-  <div class="tab-content" id="tab-uyum">
-    <div class="uyum-section">
-
-      <!-- Form: ikinci kişi -->
-      <div class="add-person-card" id="uyum-form">
-        <div class="add-person-header">
-          <div>
-            <div class="add-person-title">İkinci kişiyi ekle</div>
-            <div class="add-person-sub">Uyumluluğu görmek için doğum bilgilerini gir</div>
-          </div>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" opacity=".35"><circle cx="10" cy="7" r="3.5" stroke="#0F0F0F" stroke-width="1.1"/><path d="M3 18c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke="#0F0F0F" stroke-width="1.1" stroke-linecap="round"/></svg>
-        </div>
-        <div class="add-person-body">
-          <div class="field"><label class="field-lbl">Adı</label><input class="field-in" type="text" id="b-name" placeholder="Adını yaz"></div>
-          <div class="field"><label class="field-lbl">Doğum Tarihi</label><input class="field-in" type="date" id="b-date" value="1992-07-22"></div>
-          <div class="field-row">
-            <div class="field"><label class="field-lbl">Saat</label><input class="field-in" type="time" id="b-time" value="14:30"></div>
-            <div class="field"><label class="field-lbl">Şehir</label>
-              <select class="field-in" id="b-city">
-                <option value="Istanbul">İstanbul</option><option value="Ankara">Ankara</option>
-                <option value="Izmir">İzmir</option><option value="Antalya">Antalya</option>
-                <option value="Bursa">Bursa</option><option value="Adana">Adana</option>
-                <option value="Other">Diğer</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn-compare" onclick="calcCompat()"><span>Uyumu Hesapla</span><span>→</span></button>
+    <!-- HARITA + GEZEGENLERİ içerir -->
+    <div class="tab-content active" id="tab-harita">
+      <div class="chart-section">
+        <svg class="chart-svg" id="chart-svg" viewBox="0 0 300 300" fill="none"></svg>
+        <div class="triad-row">
+          <div class="tc"><div class="tc-lbl">Güneş ☉</div><div class="tc-sign" id="d-sun">—</div><div class="tc-deg" id="d-sun-deg">—</div></div>
+          <div class="tc"><div class="tc-lbl">Ay ☽</div><div class="tc-sign" id="d-moon">—</div><div class="tc-deg" id="d-moon-deg">—</div></div>
+          <div class="tc dark"><div class="tc-lbl">Yükselen ↑</div><div class="tc-sign" id="d-asc">—</div><div class="tc-deg" id="d-asc-deg">—</div></div>
         </div>
       </div>
+      <div class="daily-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;">
+          <div class="daily-lbl" style="margin-bottom:0;">Bugünün Enerjisi</div>
+          <button id="daily-refresh" onclick="loadDailyAI()" style="background:rgba(91,127,255,.15);border:none;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:500;color:#5B7FFF;font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:4px;"><span id="daily-refresh-icon">✦</span> AI yorum</button>
+        </div>
+        <div class="daily-txt" id="d-daily">—</div>
+      </div>
+      <div class="elem-card"><div class="elem-lbl">Dominant Element</div><div class="elem-val" id="d-elem">—</div></div>
 
-      <!-- Sonuç (başta gizli) -->
-      <div id="uyum-result" style="display:none;">
-        <!-- Kişi karşılaştırma -->
-        <div class="people-compare">
-          <div class="person-card">
-            <div class="person-tag">Sen</div>
-            <div class="person-name-lbl" id="pc-a-name">—</div>
-            <div class="person-triad">
-              <div class="person-triad-row"><span class="ptr-lbl">Güneş</span><span class="ptr-val" id="pc-a-sun">—</span></div>
-              <div class="person-triad-row"><span class="ptr-lbl">Ay</span><span class="ptr-val" id="pc-a-moon">—</span></div>
-              <div class="person-triad-row"><span class="ptr-lbl">Yükselen</span><span class="ptr-val" id="pc-a-asc">—</span></div>
-            </div>
-          </div>
-          <div class="person-card second">
-            <div class="person-tag">Diğer</div>
-            <div class="person-name-lbl" id="pc-b-name">—</div>
-            <div class="person-triad">
-              <div class="person-triad-row"><span class="ptr-lbl">Güneş</span><span class="ptr-val" id="pc-b-sun">—</span></div>
-              <div class="person-triad-row"><span class="ptr-lbl">Ay</span><span class="ptr-val" id="pc-b-moon">—</span></div>
-              <div class="person-triad-row"><span class="ptr-lbl">Yükselen</span><span class="ptr-val" id="pc-b-asc">—</span></div>
-            </div>
-          </div>
+      <!-- Gezegenler — Harita sekmesinin altında -->
+      <div class="pl-section" style="margin-top:16px;">
+        <div class="sec-hd">Gezegen Konumları</div>
+        <div class="pl-card" id="planet-list"></div>
+        <div class="sec-hd" style="margin-top:4px;">Aspektler</div>
+        <div class="asp-card" id="aspect-list"></div>
+        <!-- Aspekt açıklaması -->
+        <div style="margin:10px 0 0;padding:12px 14px;background:var(--white);border:.5px solid var(--ink-200);border-radius:12px;">
+          <div style="font-size:10px;font-weight:500;color:var(--ink-400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">Aspekt nedir?</div>
+          <div style="font-size:12px;font-weight:300;color:var(--ink-500);line-height:1.7;">Gezegenler arasındaki açısal ilişkiyi gösterir. <span style="color:var(--arc);">△ Trine</span> ve <span style="color:var(--green);">✶ Sextile</span> uyumlu enerjiler, <span style="color:var(--red);">□ Kare</span> ve <span style="color:var(--orange);">☍ Karşıtlık</span> zorlayıcı ama büyütücü gerilimler yaratır.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KİŞİLİK -->
+    <div class="tab-content" id="tab-kisilik">
+      <div class="k-hero">
+        <svg class="k-hero-bg" id="k-bg" width="120" height="120" viewBox="0 0 140 140" fill="none"></svg>
+        <div class="k-eye">Güneş Burcu</div>
+        <div class="k-name" id="k-sign">—</div>
+        <div class="k-el" id="k-el">—</div>
+        <div class="k-kws" id="k-kws"></div>
+      </div>
+      <div class="trait-section">
+        <div class="trait-blk"><div class="trait-over">Güçlü Yönler</div><div class="trait-title">Seni benzersiz kılan</div><div class="trait-txt" id="k-str">—</div></div>
+        <div class="trait-blk"><div class="trait-over">Zorluklar</div><div class="trait-title">Büyüme alanların</div><div class="trait-txt" id="k-ch">—</div></div>
+        <div class="trait-blk"><div class="trait-over">Ay Burcu</div><div class="trait-title">İç dünyan</div><div class="trait-txt" id="k-moon">—</div></div>
+        <div class="trait-blk"><div class="trait-over">Yükselen Burç</div><div class="trait-title">Dışarıdan nasıl görünürsün</div><div class="trait-txt" id="k-ris">—</div></div>
+        <div class="trait-blk"><div class="trait-over">Aşk & İlişki</div><div class="trait-title">Sevginin dili</div><div class="trait-txt" id="k-love">—</div></div>
+        <div class="trait-blk"><div class="trait-over">Kariyer</div><div class="trait-title">Hedeflerin ve yolun</div><div class="trait-txt" id="k-car">—</div></div>
+      </div>
+    </div>
+
+    <!-- UYUM -->
+    <div class="tab-content" id="tab-uyum">
+      <div class="uyum-section">
+        <!-- Kayıtlı profiller -->
+        <div id="saved-profiles-section" style="display:none;margin-bottom:12px;">
+          <div class="saved-hd">Kayıtlı Kişiler</div>
+          <div id="saved-profiles-list"></div>
         </div>
 
-        <!-- Genel skor -->
-        <div class="score-card">
-          <div class="score-eye">Genel Uyum Skoru</div>
-          <div class="score-number" id="uyum-score">—</div>
-          <div class="score-label" id="uyum-label">—</div>
-          <div class="score-bar-wrap">
-            <div class="score-bar-track"><div class="score-bar-fill" id="score-bar" style="width:0%"></div></div>
-          </div>
-        </div>
-
-        <!-- Kategori uyum -->
-        <div class="compat-grid" id="compat-cats"></div>
-
-        <!-- AI Uyum Analizi -->
-        <div style="background:var(--white);border:.5px solid var(--ink-200);border-radius:14px;overflow:hidden;margin-bottom:10px;">
-          <div style="padding:14px 16px 12px;border-bottom:.5px solid var(--ink-100);display:flex;align-items:center;justify-content:space-between;">
+        <!-- Form -->
+        <div class="add-person-card" id="uyum-form">
+          <div class="add-person-header">
             <div>
-              <div style="font-size:13px;font-weight:500;color:var(--ink-900);">AI Uyum Analizi</div>
-              <div style="font-size:11px;font-weight:300;color:var(--ink-400);margin-top:1px;">Claude ile derin yorum</div>
+              <div class="add-person-title">İkinci kişiyi ekle</div>
+              <div class="add-person-sub">Doğum bilgilerini gir, profil olarak kaydedilir</div>
             </div>
-            <button id="ai-compat-btn" onclick="loadCompatAI()" style="background:var(--arc-50);border:.5px solid var(--arc-lt);border-radius:20px;padding:7px 14px;font-size:11px;font-weight:500;color:var(--arc);font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;">
-              <span id="ai-compat-icon">✦</span><span id="ai-compat-btn-lbl">Analiz et</span>
-            </button>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" opacity=".35"><circle cx="10" cy="7" r="3.5" stroke="#0F0F0F" stroke-width="1.1"/><path d="M3 18c0-3.87 3.13-7 7-7s7 3.13 7 7" stroke="#0F0F0F" stroke-width="1.1" stroke-linecap="round"/></svg>
           </div>
-          <div style="padding:14px 16px;">
-            <div id="ai-compat-text" style="font-size:13px;font-weight:300;color:var(--ink-500);line-height:1.8;">İki kişinin haritasını karşılaştırarak derin bir uyum analizi almak için butona bas.</div>
+          <div class="add-person-body">
+            <div class="field"><label class="field-lbl">Adı</label><input class="field-in" type="text" id="b-name" placeholder="Adını yaz"></div>
+            <div class="field"><label class="field-lbl">Doğum Tarihi</label><input class="field-in" type="date" id="b-date" value="1992-07-22"></div>
+            <div class="field-row">
+              <div class="field"><label class="field-lbl">Saat</label><input class="field-in" type="time" id="b-time" value="14:30"></div>
+              <div class="field"><label class="field-lbl">Şehir</label>
+                <select class="field-in" id="b-city">
+                  <option value="Istanbul">İstanbul</option><option value="Ankara">Ankara</option>
+                  <option value="Izmir">İzmir</option><option value="Antalya">Antalya</option>
+                  <option value="Bursa">Bursa</option><option value="Adana">Adana</option>
+                  <option value="Other">Diğer</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-compare" onclick="calcCompat()"><span>Uyumu Hesapla</span><span>→</span></button>
           </div>
         </div>
 
-        <!-- Synastry aspektleri -->
-        <div class="sec-hd" style="margin-bottom:8px;">Gezegen Bağlantıları</div>
-        <div class="syn-card" id="syn-list"></div>
-
-        <!-- Sıfırla -->
-        <button class="btn-reset" onclick="resetCompat()">← Farklı biri dene</button>
+        <!-- Sonuç -->
+        <div id="uyum-result" style="display:none;">
+          <div class="people-compare">
+            <div class="person-card">
+              <div class="person-tag">Sen</div>
+              <div class="person-name-lbl" id="pc-a-name">—</div>
+              <div class="person-triad">
+                <div class="person-triad-row"><span class="ptr-lbl">Güneş</span><span class="ptr-val" id="pc-a-sun">—</span></div>
+                <div class="person-triad-row"><span class="ptr-lbl">Ay</span><span class="ptr-val" id="pc-a-moon">—</span></div>
+                <div class="person-triad-row"><span class="ptr-lbl">Yükselen</span><span class="ptr-val" id="pc-a-asc">—</span></div>
+              </div>
+            </div>
+            <div class="person-card second">
+              <div class="person-tag">Diğer</div>
+              <div class="person-name-lbl" id="pc-b-name">—</div>
+              <div class="person-triad">
+                <div class="person-triad-row"><span class="ptr-lbl">Güneş</span><span class="ptr-val" id="pc-b-sun">—</span></div>
+                <div class="person-triad-row"><span class="ptr-lbl">Ay</span><span class="ptr-val" id="pc-b-moon">—</span></div>
+                <div class="person-triad-row"><span class="ptr-lbl">Yükselen</span><span class="ptr-val" id="pc-b-asc">—</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="score-card">
+            <div class="score-eye">Genel Uyum Skoru</div>
+            <div class="score-number" id="uyum-score">—</div>
+            <div class="score-label" id="uyum-label">—</div>
+            <div class="score-bar-wrap"><div class="score-bar-track"><div class="score-bar-fill" id="score-bar" style="width:0%"></div></div></div>
+          </div>
+          <div class="compat-grid" id="compat-cats"></div>
+          <!-- Kısa teaser — premium için -->
+          <div class="compat-teaser">
+            <div class="compat-teaser-txt" id="compat-teaser-txt">Uyum analizi hesaplanıyor…</div>
+            <div class="compat-premium-hint">Derin analizi görmek için Premium'a geç →</div>
+          </div>
+          <!-- AI Uyum -->
+          <div style="background:var(--white);border:.5px solid var(--ink-200);border-radius:14px;overflow:hidden;margin-bottom:10px;">
+            <div style="padding:14px 16px 12px;border-bottom:.5px solid var(--ink-100);display:flex;align-items:center;justify-content:space-between;">
+              <div><div style="font-size:13px;font-weight:500;color:var(--ink-900);">AI Uyum Analizi</div><div style="font-size:11px;font-weight:300;color:var(--ink-400);margin-top:1px;">Claude ile derin yorum</div></div>
+              <button id="ai-compat-btn" onclick="loadCompatAI()" style="background:var(--arc-50);border:.5px solid var(--arc-lt);border-radius:20px;padding:7px 14px;font-size:11px;font-weight:500;color:var(--arc);font-family:'DM Sans',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;"><span id="ai-compat-icon">✦</span><span id="ai-compat-btn-lbl">Analiz et</span></button>
+            </div>
+            <div style="padding:14px 16px;"><div id="ai-compat-text" style="font-size:13px;font-weight:300;color:var(--ink-500);line-height:1.8;">İki kişinin haritasını karşılaştırarak derin bir uyum analizi almak için butona bas.</div></div>
+          </div>
+          <div class="sec-hd" style="margin-bottom:8px;">Gezegen Bağlantıları</div>
+          <div class="syn-card" id="syn-list"></div>
+          <button class="btn-reset" onclick="resetCompat()">← Yeni kişi ekle</button>
+        </div>
       </div>
-
     </div>
-  </div>
 
-  <!-- BOTTOM NAV -->
+    <!-- DÖNGÜLER -->
+    <div class="tab-content" id="tab-donguler">
+      <div class="cy-section" id="cycles-section"></div>
+    </div>
+
+  </div><!-- .tab-wrapper -->
+
+  <!-- BOTTOM NAV — 4 ana alan -->
   <div class="bnav">
     <div class="bni active" onclick="switchNav(this,'harita')">
       <svg class="bni-ico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.1"/><circle cx="10" cy="10" r="3.5" stroke="currentColor" stroke-width="1.1"/><line x1="10" y1="1.5" x2="10" y2="4.5" stroke="currentColor" stroke-width="1.1"/><line x1="10" y1="15.5" x2="10" y2="18.5" stroke="currentColor" stroke-width="1.1"/><line x1="1.5" y1="10" x2="4.5" y2="10" stroke="currentColor" stroke-width="1.1"/><line x1="15.5" y1="10" x2="18.5" y2="10" stroke="currentColor" stroke-width="1.1"/></svg>
@@ -677,15 +677,13 @@ select.field-in{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://ww
       <span class="bni-lbl">Uyum</span>
     </div>
     <div class="bni" onclick="switchNav(this,'donguler')">
-      <svg class="bni-ico" viewBox="0 0 20 20" fill="none"><rect x="2.5" y="3.5" width="15" height="13" rx="2" stroke="currentColor" stroke-width="1.1"/><line x1="2.5" y1="7.5" x2="17.5" y2="7.5" stroke="currentColor" stroke-width=".8"/><circle cx="7" cy="12" r="1" fill="currentColor"/><circle cx="10" cy="12" r="1" fill="currentColor"/><circle cx="13" cy="12" r="1" fill="currentColor"/></svg>
+      <svg class="bni-ico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.1"/><path d="M10 5v5l3.5 3.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
       <span class="bni-lbl">Döngüler</span>
     </div>
-    <div class="bni" onclick="switchNav(this,'gezegenler')">
-      <svg class="bni-ico" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.1"/><ellipse cx="10" cy="10" rx="8.5" ry="3.5" stroke="currentColor" stroke-width="1.1" transform="rotate(-22 10 10)"/></svg>
-      <span class="bni-lbl">Gezegen</span>
-    </div>
   </div>
+
 </div><!-- #s-dash -->
+
 
 </div><!-- .app -->
 
@@ -710,17 +708,15 @@ function goTo(id){
   setTimeout(()=>n.classList.add('active'),50);
   cur=id;
 }
-function showTab(name,btn){
+function showTab(name){
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
-  if(btn)btn.classList.add('active');
+  const el=document.getElementById('tab-'+name);
+  if(el)el.classList.add('active');
 }
 function switchNav(el,tab){
   document.querySelectorAll('.bni').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  const btn=Array.from(document.querySelectorAll('.tab-btn')).find(b=>b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+tab+"'"));
-  showTab(tab,btn);
+  showTab(tab);
 }
 
 
@@ -1015,6 +1011,17 @@ function renderDashboard(d){
   document.getElementById('k-love').textContent=sd.love;
   document.getElementById('k-car').textContent=sd.career;
 
+  // Gezegen açıklama veritabanı
+  const PLANET_INFO={
+    '☉':{n:'Güneş',what:'Kimliğini, yaşam amacını ve temel enerjini temsil eder.',inSign:(sgn)=>`Güneşin ${sgn} burcunda olması, hayatına ${sgn} enerjisini merkeze alarak yürüdüğünü gösterir. Başkalarına nasıl göründüğünden çok kim olduğunun özüdür.`},
+    '☽':{n:'Ay',what:'Duygusal dünyani, içgüdülerini ve güvenlik ihtiyacını yönetir.',inSign:(sgn)=>`Ay ${sgn} burcunda — duygusal tepkilerin ve iç huzur ihtiyacın ${sgn} rengiyle şekilleniyor. Kimseye söylemediğin ama içinde yaşadığın alan bu.`},
+    '☿':{n:'Merkür',what:'Düşünce tarzını, iletişim biçimini ve öğrenme sürecini belirler.',inSign:(sgn)=>`Merkür ${sgn} burcunda — zihnin ve sözlerin ${sgn} enerjisiyle akar. Bilgiyi nasıl işlediğin, nasıl konuştuğun buradan gelir.`},
+    '♀':{n:'Venüs',what:'Aşk anlayışını, güzellik algını ve ne tür ilişkileri çektiğini gösterir.',inSign:(sgn)=>`Venüs ${sgn} burcunda — kalbin ve estetik duygun ${sgn} titreşiminde. Sevgiyi nasıl verip aldığını, neyin seni mutlu ettiğini buradan okuyabilirsin.`},
+    '♂':{n:'Mars',what:'Eylem biçimini, arzularını, motivasyonunu ve enerji kullanımını temsil eder.',inSign:(sgn)=>`Mars ${sgn} burcunda — harekete geçme biçimin ve tutku yönün ${sgn} rengi taşıyor. Ne için savaşacağını ve nasıl kazanacağını buradan anlarsın.`},
+    '♃':{n:'Jüpiter',what:'Büyüme, bolluk, şans ve yaşam felsefenle ilgili alanlara işaret eder.',inSign:(sgn)=>`Jüpiter ${sgn} burcunda — hayatında en kolay büyüdüğün ve bolluğun aktığı alan burası. ${sgn} enerjisiyle uyumlu adımlar attığında kapılar açılıyor.`},
+    '♄':{n:'Satürn',what:'Disiplin, sorumluluk, sınırlar ve uzun vadeli öğrenme derslerini temsil eder.',inSign:(sgn)=>`Satürn ${sgn} burcunda — hayatında en çok direnç hissettiğin ve büyümeye zorlandığın alan. Zorlu ama en değerli öğretmen.`}
+  };
+
   const pRows=[
     {s:'☉',n:'Güneş',sgn:ss,lon:sl,h:'5. Ev'},
     {s:'☽',n:'Ay',sgn:ms,lon:ml,h:'4. Ev'},
@@ -1024,25 +1031,140 @@ function renderDashboard(d){
     {s:'♃',n:'Jüpiter',sgn:sn(pl.jupiter),lon:pl.jupiter,h:'8. Ev',acc:true},
     {s:'♄',n:'Satürn',sgn:sn(pl.saturn),lon:pl.saturn,h:'9. Ev',rx:true}
   ];
-  document.getElementById('planet-list').innerHTML=pRows.map(p=>`<div class="pl-row"><div class="pl-sym${p.acc?' acc':''}">${p.s}</div><div class="pl-info"><div class="pl-name">${p.n}${p.rx?'<span class="pl-rx">Rx</span>':''}</div><div class="pl-det">${p.sgn} · ${p.h}</div></div><div class="pl-deg">${dg(p.lon)}</div></div>`).join('');
+
+  document.getElementById('planet-list').innerHTML=pRows.map((p,i)=>{
+    const info=PLANET_INFO[p.s];
+    const detailId=`pl-detail-${i}`;
+    const chevId=`pl-chev-${i}`;
+    return `
+      <div>
+        <div class="pl-row" onclick="togglePlanet('${detailId}','${chevId}')">
+          <div class="pl-sym${p.acc?' acc':''}">${p.s}</div>
+          <div class="pl-info">
+            <div class="pl-name">${p.n}${p.rx?'<span class="pl-rx">Rx</span>':''} <span class="pl-chev" id="${chevId}">▾</span></div>
+            <div class="pl-det">${p.sgn} · ${p.h}</div>
+          </div>
+          <div class="pl-deg">${dg(p.lon)}</div>
+        </div>
+        <div class="pl-detail" id="${detailId}">
+          <div class="pl-detail-name">${info?info.n:p.n}</div>
+          <div class="pl-detail-what">${info?info.what:''}</div>
+          <div class="pl-detail-in">
+            <div class="pl-detail-in-lbl">${p.sgn} burcunda</div>
+            <div class="pl-detail-in-txt">${info?info.inSign(p.sgn):''}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 
   const allL={sun:sl,moon:ml,...pl};
   const aNames={sun:'Güneş',moon:'Ay',mercury:'Merkür',venus:'Venüs',mars:'Mars',jupiter:'Jüpiter',saturn:'Satürn'};
   const pairs=[['sun','moon'],['sun','jupiter'],['moon','venus'],['mercury','saturn'],['venus','mars'],['sun','saturn'],['moon','jupiter']];
-  document.getElementById('aspect-list').innerHTML=pairs.map(([a,b])=>{const r=getAsp(allL[a],allL[b]);if(!r)return'';const o=Math.min(Math.abs(allL[a]-allL[b])%360,360-Math.abs(allL[a]-allL[b])%360).toFixed(1);return`<div class="asp-row"><div class="asp-ico ${r.c}">${r.s}</div><div class="asp-info"><div class="asp-pl">${aNames[a]} — ${aNames[b]}</div><div class="asp-tp">${r.t}</div></div><div class="asp-orb">${o}°</div></div>`;}).join('');
+  document.getElementById('aspect-list').innerHTML=pairs.map(([a,b])=>{
+    const r=getAsp(allL[a],allL[b]);if(!r)return'';
+    const o=Math.min(Math.abs(allL[a]-allL[b])%360,360-Math.abs(allL[a]-allL[b])%360).toFixed(1);
+    return`<div class="asp-row"><div class="asp-ico ${r.c}">${r.s}</div><div class="asp-info"><div class="asp-pl">${aNames[a]} — ${aNames[b]}</div><div class="asp-tp">${r.t}</div></div><div class="asp-orb">${o}°</div></div>`;
+  }).join('');
 
+  // Döngüler — Mart 2026 bazlı gerçek tarihler
   const cyc=[
-    {t:'Satürn Geçişi',p:'Uzun vadeli yapı dönemi',act:true,d:`Satürn ${as} burcundan geçerken uzun vadeli yapılar inşa etme ve eski kalıpları bırakma zamanı. Zorlu ama dönüştürücü bir dönem.`,pr:45,s:'Mar 2024',e:'Eyl 2025'},
-    {t:`${ss} Mevsimi`,p:`Güneş ${ss}'de`,act:true,d:'Güneş kendi burcundan geçiyor — yıl içinde en güçlü dönemlerinden biri. Kendine yatırım yap.',pr:70,s:'Şub 2025',e:'Mar 2025'},
-    {t:'Jüpiter Genişlemesi',p:'Önümüzdeki 6 ay',act:false,d:'Jüpiter büyüme ve bolluk getirir. Yeni fırsatlar için zihnini ve kalbini açık tut.',pr:0},
-    {t:'Dolunay Etkisi',p:'Bu ay',act:false,d:'Dolunay duygusal doruk noktasını simgeler. Kapanması gereken döngüler kapanır.',pr:0}
+    {t:'Satürn Geçişi',p:'Balık → Koç',act:true,
+     d:`Satürn Mart 2026'da Koç burcuna geçiyor — yeni bir 30 yıllık dönem başlıyor. Eski kimliğini bırakma ve yeniden inşa etme zamanı. Bu geçiş ${as} yükselenliler için özellikle derin hissettiriyor.`,
+     hint:'Satürn dönüşünün sana özel etkisini görmek için →',pr:92,s:'Mar 2026',e:'Mar 2028'},
+    {t:`${ss} Mevsimi`,p:`Güneş ${ss}'de · Yıllık doruk`,act:true,
+     d:`Güneş kendi burcundan geçiyor — yıl içinde kendine en yakın hissettiğin dönem. Enerji yüksek, niyet güçlü. Bu haftaları boşa harcama.`,
+     hint:'Mevsim boyunca günlük enerji takibi için →',pr:60,s:'Şub 2026',e:'Mar 2026'},
+    {t:'Jüpiter Yengeç\'te',p:'Haz 2025 – Haz 2026',act:false,
+     d:`Jüpiter Yengeç burcunda ev, aile ve duygusal güvenlik temalarını büyütüyor. Su burçları için olağanüstü fırsatlar; diğerleri için de iç dünya büyümesi.`,
+     hint:'Jüpiter\'in sana özel fırsatlarını keşfet →'},
+    {t:'Kuzey Düğümü Balık\'ta',p:'Oca 2025 – Tem 2026',act:false,
+     d:`Kuzey Düğüm Balık'ta — kolektif olarak şifa, sezgi ve bağlantı temalarına doğru evriliyoruz. Akrep ve Yengeç yükselenler için özellikle anlamlı.`,
+     hint:'Düğüm geçişinin senin haritanda ne anlama geldiğini gör →'}
   ];
-  document.getElementById('cycles-section').innerHTML=cyc.map(c=>`<div class="cy-card"><div class="cy-top"><div><div class="cy-title">${c.t}</div><div class="cy-period">${c.p}</div></div>${c.act?'<div class="cy-active"><div class="pulse"></div>Aktif</div>':''}</div><div class="cy-body"><div class="cy-desc">${c.d}</div>${c.act&&c.pr?`<div class="prog-track"><div class="prog-fill" style="width:${c.pr}%"></div></div><div class="prog-lbs"><span class="prog-lb">${c.s}</span><span class="prog-lb">${c.e}</span></div>`:''}  </div></div>`).join('');
+  document.getElementById('cycles-section').innerHTML=cyc.map(c=>`
+    <div class="cy-card">
+      <div class="cy-top">
+        <div>
+          <div class="cy-title">${c.t}</div>
+          <div class="cy-period">${c.p}</div>
+        </div>
+        ${c.act?'<div class="cy-active"><div class="pulse"></div>Aktif</div>':''}
+      </div>
+      <div class="cy-body">
+        <div class="cy-desc">${c.d}</div>
+        ${c.hint?`<div class="cy-premium-hint">${c.hint}</div>`:''}
+        ${c.act&&c.pr?`<div class="prog-track"><div class="prog-fill" style="width:${c.pr}%"></div></div><div class="prog-lbs"><span class="prog-lb">${c.s}</span><span class="prog-lb">${c.e}</span></div>`:''}
+      </div>
+    </div>`).join('');
 
   drawChart(sl,ml,al,pl);
+  renderSavedProfiles();
 }
 
-// ── COMPATIBILITY ──
+// ── PLANET ACCORDION ──
+function togglePlanet(detailId, chevId){
+  const d=document.getElementById(detailId);
+  const c=document.getElementById(chevId);
+  if(!d)return;
+  const isOpen=d.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.pl-detail').forEach(el=>el.classList.remove('open'));
+  document.querySelectorAll('.pl-chev').forEach(el=>el.classList.remove('open'));
+  if(!isOpen){d.classList.add('open');c.classList.add('open');}
+}
+
+// ── SAVED PROFILES (localStorage) ──
+function getSavedProfiles(){
+  try{return JSON.parse(localStorage.getItem('zodia_compat_profiles')||'[]');}catch(e){return [];}
+}
+function saveProfile(profile){
+  const profiles=getSavedProfiles();
+  // Aynı isim varsa güncelle
+  const idx=profiles.findIndex(p=>p.name===profile.name);
+  if(idx>=0)profiles[idx]=profile;
+  else profiles.push(profile);
+  try{localStorage.setItem('zodia_compat_profiles',JSON.stringify(profiles));}catch(e){}
+}
+function deleteProfile(name){
+  let profiles=getSavedProfiles().filter(p=>p.name!==name);
+  try{localStorage.setItem('zodia_compat_profiles',JSON.stringify(profiles));}catch(e){}
+  renderSavedProfiles();
+}
+function renderSavedProfiles(){
+  const profiles=getSavedProfiles();
+  const section=document.getElementById('saved-profiles-section');
+  const list=document.getElementById('saved-profiles-list');
+  if(!section||!list)return;
+  if(profiles.length===0){section.style.display='none';return;}
+  section.style.display='block';
+  list.innerHTML=profiles.map(p=>`
+    <div class="saved-row" onclick="loadSavedProfile('${encodeURIComponent(JSON.stringify(p))}')">
+      <div class="saved-avatar">${p.name.charAt(0).toUpperCase()}</div>
+      <div class="saved-info">
+        <div class="saved-name">${p.name}</div>
+        <div class="saved-signs">${p.ss} ☉ · ${p.ms} ☽ · ${p.as} ↑</div>
+      </div>
+      <div class="saved-del" onclick="event.stopPropagation();deleteProfile('${p.name}')">×</div>
+    </div>`).join('');
+}
+function loadSavedProfile(encoded){
+  try{
+    const p=JSON.parse(decodeURIComponent(encoded));
+    document.getElementById('b-name').value=p.name;
+    if(p.dateV)document.getElementById('b-date').value=p.dateV;
+    if(p.timeV)document.getElementById('b-time').value=p.timeV;
+    if(p.city)document.getElementById('b-city').value=p.city;
+    calcCompat();
+  }catch(e){}
+}
+
+// ── COMPAT TEASER METİNLERİ ──
+const COMPAT_TEASERS=[
+  (a,b,score)=>`${a} ve ${b} arasındaki dinamik düşündüğünden ${score>65?'çok daha':'biraz daha'} karmaşık. Element uyumunun ötesinde, Mars ve Venüs açıları ilişkinin gerçek dokusunu belirliyor.`,
+  (a,b,score)=>`İlk bakışta ${score>70?'güçlü bir uyum':'zorlu bir gerilim'} görünüyor — ama asıl hikaye Ay bağlantılarında gizli. ${a}'in iç dünyası ile ${b}'in enerjisi gerçekte nasıl konuşuyor?`,
+  (a,b,score)=>`Bu iki harita arasında ${score>65?'sıradan dışı bir rezonans':'ilginç bir karşıtlık'} var. Derin analiz, hangi alanda büyüyeceğinizi ve nerede kendiniz kalacağınızı gösteriyor.`
+];
+
 // Element uyum tablosu
 const EL_COMPAT={
   'Ateş':   {Ateş:90, Hava:85,  Toprak:50, Su:45},
@@ -1091,6 +1213,9 @@ function calcCompat(){
   const bpl={mercury:mL(jd),venus:vL(jd),mars:maL(jd),jupiter:jL(jd),saturn:sL(jd)};
   const bss=sn(bsl),bms=sn(bml),bas=sn(bal);
   compatChartB = {name:bName, ss:bss, ms:bms, as:bas};
+
+  // Profili kaydet
+  saveProfile({name:bName, dateV:bDateV, timeV:bTimeV, city:bCity, ss:bss, ms:bms, as:bas});
 
   // Kişi kartları doldur
   document.getElementById('pc-a-name').textContent=userChart.name;
@@ -1162,9 +1287,17 @@ function calcCompat(){
   // Synastry list
   document.getElementById('syn-list').innerHTML=synRows.slice(0,6).map(r=>`<div class="syn-row"><div class="syn-ico ${r.cls}">${r.ico}</div><div class="syn-planets"><div class="syn-pl">${r.aName} <span>& ${r.bName}</span></div><div class="syn-type">${r.type}</div>${r.desc?`<div class="syn-desc">${r.desc}</div>`:''}</div></div>`).join('');
 
+  // Teaser metni
+  const teaserEl=document.getElementById('compat-teaser-txt');
+  if(teaserEl){
+    const tIdx=Math.floor(Math.random()*COMPAT_TEASERS.length);
+    teaserEl.textContent=COMPAT_TEASERS[tIdx](userChart.name,bName,finalScore);
+  }
+
   // Göster / gizle
   document.getElementById('uyum-form').style.display='none';
   document.getElementById('uyum-result').style.display='block';
+  renderSavedProfiles();
   setTimeout(()=>document.querySelectorAll('.compat-cat-fill').forEach(el=>{const w=el.style.width;el.style.width='0%';setTimeout(()=>el.style.width=w,50);}),200);
 }
 
@@ -1282,6 +1415,10 @@ function resetCompat(){
   document.getElementById('ai-compat-text').textContent='İki kişinin haritasını karşılaştırarak derin bir uyum analizi almak için butona bas.';
   document.getElementById('ai-compat-btn-lbl').textContent='Analiz et';
   document.getElementById('ai-compat-icon').style.animation='';
+  // Form alanlarını temizle
+  document.getElementById('b-name').value='';
+  document.getElementById('b-date').value='';
+  renderSavedProfiles();
 }
 </script>
 </body>
